@@ -54,7 +54,14 @@
 </template>
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from "vue";
+import { useRouter } from 'vue-router';
 import { UserOutlined, LockOutlined } from "@ant-design/icons-vue";
+import { useForm } from '@ant-design-vue/use';
+import { message } from 'ant-design-vue';
+import { login } from "@/api/user.ts"
+import { crypto } from "@/utils/crypto"
+import { registerType } from '@/api/apiType'
+
 export default defineComponent({
   name: "login",
   components: {
@@ -62,6 +69,7 @@ export default defineComponent({
     LockOutlined,
   },
   setup() {
+    const router = useRouter();
     const state = reactive({
       loading: false,
       errorMessage: "",
@@ -84,9 +92,28 @@ export default defineComponent({
         ],
       },
     });
+    const { validate } = useForm(state.formInline, state.rules);
     const handleSubmit = async () => {
-      console.log(state.formInline)
-      // const { username, password } = state.formInline
+      const encrypt: string = crypto.encrypt(state.formInline.password)
+      const params: registerType = {
+        username: state.formInline.username,
+        password: encrypt
+      }
+      validate().then(async () => {
+        state.loading = true
+        login(params).then(res => {
+          if (res.code === 0) {
+            message.success('登录成功');
+            router.push('/');
+          }
+          state.loading = false
+        }).catch(err => {
+          if (err.message === 'CustomError' && err.response.data.code === -1) {
+            message.error(err.response.data.message)
+          }
+          state.loading = false
+        })
+      })
     };
     return {
       ...toRefs(state),

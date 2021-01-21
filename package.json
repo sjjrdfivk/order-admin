@@ -12,13 +12,16 @@
     "ant-design-vue": "^2.0.0-rc.8",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "crypto-js": "^4.0.0",
     "localforage": "^1.9.0",
     "moment": "^2.29.1",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.3",
+    "vuex": "^4.0.0-rc.2"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.0.1",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",

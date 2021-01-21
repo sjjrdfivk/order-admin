@@ -40,13 +40,13 @@ const errorHandler = (error: any) => {
         // 自定义错误
         const { config, data } = response;
         const { url, baseURL} = config;
-        const { code, msg } = data;
+        const { code, message } = data;
         const reqUrl = url.split("?")[0].replace(baseURL, '');
         const noVerifyBool = settings.ajaxResponseNoVerifyUrl.includes(reqUrl);
         if (!noVerifyBool) {
             notification.error({
               message: `提示`,
-              description: customCodeMessage[code] || msg || 'Error',
+              description: customCodeMessage[code] || message || 'Error',
             });
       
             if (code === 10002) {

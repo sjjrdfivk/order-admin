@@ -3,6 +3,7 @@ import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
+    name: 'Layout',
     component: () => import('@/layouts/IndexLayout/index.vue'),
   },
   {

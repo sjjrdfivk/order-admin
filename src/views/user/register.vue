@@ -64,8 +64,14 @@
 </template>
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from "vue";
+import { useRouter } from 'vue-router';
 import { UserOutlined, LockOutlined } from "@ant-design/icons-vue";
-// import { register } from "@/api/user.ts"
+import { useForm } from '@ant-design-vue/use';
+import { message } from 'ant-design-vue';
+import { register } from "@/api/user.ts"
+import { crypto } from "@/utils/crypto"
+import { registerType } from '@/api/apiType'
+
 export default defineComponent({
   name: "login",
   components: {
@@ -73,6 +79,7 @@ export default defineComponent({
     LockOutlined,
   },
   setup() {
+    const router = useRouter();
     const state = reactive({
       loading: false,
       errorMessage: "",
@@ -93,6 +100,10 @@ export default defineComponent({
             required: true,
             message: "请输入密码",
           },
+          {
+            pattern: "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$",
+            message: "密码至少包含 数字和英文，长度6-20",
+          },
         ],
         confirm: [
           {
@@ -109,14 +120,32 @@ export default defineComponent({
         ],
       },
     });
-    const handleSubmit = async (e: any) => {
-      console.log(e)
-      const { username, password, confirm } = state.formInline;
-      console.log(username, password, confirm);
+    const { validate } = useForm(state.formInline, state.rules);
+    const handleSubmit = async () => {
+      validate().then(async () => {
+        state.loading = true
+        const password: string = crypto.encrypt(state.formInline.password)
+        const confirm: string = crypto.encrypt(state.formInline.confirm)
+        const params: registerType = {
+          username: state.formInline.username,
+          password,
+          confirm
+        }
+        const { code } = await register(params)
+        if (code === 0) {
+          message.success('注册成功');
+          router.replace('/user/login');
+        }
+        state.loading = false
+      }).catch(err => {
+        state.loading = false
+        console.log('error', err);
+      });
     };
     return {
       ...toRefs(state),
       handleSubmit,
+      validate,
     };
   },
 });
