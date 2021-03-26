@@ -1,7 +1,7 @@
 <template>
   <div class="logo">
     <img src="@/assets/images/logo.jpg" alt="" />
-    <h2 v-show="!collapsed" class="title">帅气一点</h2>
+    <h2 v-show="!collapsed" class="title">SJJRDFIVK</h2>
   </div>
 </template>
 
